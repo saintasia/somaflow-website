@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro';
+import { PRIVACY_LAST_UPDATED } from '../consts';
+---
+
+<Base
+  title="Privacy policy"
+  description="SomaFlow collects no personal data. No accounts, no analytics, no ads, no tracking — everything stays on your device."
+>
+  <article class="my-section">
+    <h1>Privacy policy</h1>
+    <p class="text-sm text-ink-muted">Last updated: {PRIVACY_LAST_UPDATED}</p>
+
+    <p>
+      The short version: <strong>SomaFlow collects no personal data.</strong>
+      The long version is below, and it stays short because there genuinely
+      isn’t much to say.
+    </p>
+
+    <h2 class="mt-reading">What the app collects</h2>
+    <p>
+      Nothing. SomaFlow has no accounts, no analytics, no ads, and no
+      tracking SDKs. We never see your name, your email, or anything about
+      how you use the app.
+    </p>
+
+    <h2 class="mt-reading">Where your data lives</h2>
+    <p>
+      Everything the app creates — your settings, custom breathing
+      techniques, and session history — is stored locally on your device
+      and never transmitted anywhere. Deleting the app deletes the data.
+    </p>
+
+    <h2 class="mt-reading">Network use</h2>
+    <p>
+      SomaFlow makes no network requests in normal use.
+      <!-- TODO(Anastasia): verify before publishing — if Expo OTA updates are
+           enabled, the app periodically fetches update bundles (a code
+           download, not a data upload) from Expo's servers. Either keep the
+           sentence below or disable OTA updates and delete it. -->
+      The one exception: like many apps, it may occasionally download app
+      updates from our app-update provider. That is a one-way download of
+      code — nothing about you or your usage is sent along with it.
+    </p>
+
+    <h2 class="mt-reading">This website</h2>
+    <p>
+      This site runs no analytics and sets no cookies. The fonts are bundled
+      into the site and served from it directly — not pulled from a
+      third-party font service — so opening these pages doesn’t reach out to
+      anyone else.
+      <!-- TODO(Anastasia): confirm this matches the chosen host (some hosts
+           add their own logging — that's server-side and fine, but if you
+           add anything client-side, update this section in the same change. -->
+    </p>
+    <p>
+      The one exception is the donation button on the
+      <a href="/feedback/">feedback page</a>, which uses Stripe to process
+      payments. Opening that page loads Stripe’s code, which may set its own
+      cookies for fraud prevention. If you don’t open the feedback page, none
+      of that runs. Stripe handles your card details — we never see them, and
+      their <a href="https://stripe.com/privacy">privacy policy</a> covers
+      what they collect.
+    </p>
+    <p>
+      The feedback form is the one place the site takes anything in: what you
+      write there — and your email, if you include one — is sent to us through
+      our host (Netlify) so we can read it and reply.
+    </p>
+
+    <h2 class="mt-reading">Questions</h2>
+    <p>
+      If anything here is unclear, ask through the
+      <a href="/feedback/">form on the feedback page</a> and we’ll get back
+      to you.
+    </p>
+  </article>
+</Base>

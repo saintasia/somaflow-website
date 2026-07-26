@@ -1,0 +1,23 @@
+{
+  "name": "somaflow-website",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource/inclusive-sans": "^5.2.8",
+    "@iconify-json/lucide": "^1.2.119",
+    "@tailwindcss/vite": "^4.3.2",
+    "astro": "^5.18.2",
+    "astro-icon": "^1.1.5",
+    "tailwindcss": "^4.3.2"
+  },
+  "allowScripts": {
+    "esbuild@0.27.7": true,
+    "esbuild@0.25.12": true
+  }
+}

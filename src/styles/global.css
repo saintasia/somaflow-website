@@ -1,0 +1,96 @@
+/* SomaFlow — base styles. All tokens live in theme.css (the Tailwind
+   config); shared utility combos live in ui.ts. No component classes. */
+
+@import '@fontsource/inclusive-sans/400.css';
+@import '@fontsource/inclusive-sans/700.css';
+@import 'tailwindcss';
+@import './theme.css';
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Pages differ in height; a stable gutter stops the sticky nav from
+       shifting sideways when the scrollbar comes and goes. */
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    @apply font-sans text-body leading-relaxed text-ink antialiased sm:text-body-lg;
+    background-color: var(--gradient-mid);
+    /* Decorative hero layers (breathing rings, full-bleed wash) extend past
+       the viewport edge; clip instead of growing a horizontal scrollbar.
+       `clip` rather than `hidden` so the sticky header keeps working. */
+    overflow-x: clip;
+  }
+
+  /* The gradient is fixed — content floats over it. A fixed pseudo-element
+     is more reliable than background-attachment: fixed on iOS. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to bottom,
+      var(--gradient-top),
+      var(--gradient-mid) 50%,
+      var(--gradient-bottom)
+    );
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-bold leading-tight text-balance;
+    margin-bottom: 0.5em;
+  }
+
+  h1 {
+    @apply text-title sm:text-title-lg;
+  }
+
+  h2 {
+    @apply text-heading sm:text-heading-lg;
+  }
+
+  h3 {
+    @apply text-subheading sm:text-subheading-lg;
+  }
+
+  p {
+    @apply mb-4;
+  }
+
+  /* Tailwind's preflight strips the browser's link underline; restore it —
+     inline links need a non-color cue, and the offset/hover rules below
+     assume it. Buttons and nav links opt out via no-underline. */
+  a {
+    @apply text-link underline underline-offset-3;
+  }
+
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  a:focus-visible {
+    @apply rounded;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

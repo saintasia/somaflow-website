@@ -1,0 +1,206 @@
+---
+import { Icon } from 'astro-icon/components';
+import Base from '../layouts/Base.astro';
+import { button, card } from '../styles/ui';
+
+// Feedback form posts to Netlify Forms: it's detected at deploy time via
+// the data-netlify attribute, submissions land in the Netlify dashboard,
+// and the script below POSTs them without a page reload.
+
+// bg-floating rather than bg-card-surface: the form already sits on a card,
+// and stacking two translucent card layers darkens the field below 4.5:1
+// against the ink text.
+const fieldClass =
+  'w-full rounded-2xl border border-border-token bg-floating px-3.5 py-3 text-ink placeholder:text-ink-muted aria-[invalid=true]:border-destructive';
+const labelClass = 'mb-1.5 block font-bold';
+const hintClass = 'text-sm font-normal text-ink-muted';
+const pillTypes = [
+  { value: 'Bug report', label: 'Bug', checked: true },
+  { value: 'Feature idea', label: 'Idea', checked: false },
+  { value: 'Other', label: 'Other', checked: false },
+];
+---
+
+<Base
+  title="Feedback"
+  description="Report a bug, suggest a feature, or support SomaFlow."
+>
+  <div class="my-section">
+    <h1>Feedback</h1>
+
+    <div class={card}>
+      <Icon name="lucide:messages-square" class="mb-3 size-7 text-primary" aria-hidden="true" />
+      <h2>Found a bug? Have an idea?</h2>
+      <p>
+        Every message is read by the person who made the app. Email is
+        optional — leave it if you’d like a reply.
+      </p>
+
+      <form
+        id="feedback-form"
+        name="feedback"
+        method="POST"
+        data-netlify="true"
+        data-netlify-honeypot="bot-field"
+        novalidate
+      >
+        <input type="hidden" name="form-name" value="feedback" />
+        <p hidden>
+          <label>Leave this empty if you’re human: <input name="bot-field" /></label>
+        </p>
+        <fieldset class="m-0 mb-5 border-0 p-0">
+          <legend class="mb-2 p-0 font-bold">What kind of message is this?</legend>
+          <div class="flex flex-wrap gap-2" role="presentation">
+            {
+              pillTypes.map(({ value, label, checked }) => (
+                <label>
+                  <input class="peer sr-only" type="radio" name="type" value={value} checked={checked} />
+                  <span class="inline-block cursor-pointer rounded-full bg-pill px-5 py-2 text-pill-ink transition-colors duration-200 peer-checked:bg-button peer-checked:font-bold peer-checked:text-button-label peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary">
+                    {label}
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <div class="mb-5">
+          <label class={labelClass} for="description">Description</label>
+          <textarea
+            class={`${fieldClass} resize-y`}
+            id="description"
+            name="description"
+            rows="5"
+            required
+            aria-describedby="description-error"></textarea>
+          <p class="mt-1.5 mb-0 text-sm text-destructive" id="description-error" hidden>
+            Please write a few words — the message can’t be empty.
+          </p>
+        </div>
+
+        <div class="mb-5">
+          <label class={labelClass} for="email">
+            Your email <span class={hintClass}>(optional, for follow-up)</span>
+          </label>
+          <input class={fieldClass} type="email" id="email" name="email" autocomplete="email" />
+        </div>
+
+        <div class="mb-5">
+          <label class={labelClass} for="device">
+            Device &amp; OS <span class={hintClass}>(optional, helps with bugs)</span>
+          </label>
+          <input
+            class={fieldClass}
+            type="text"
+            id="device"
+            name="device"
+            placeholder="e.g. Pixel 8, Android 15"
+          />
+        </div>
+
+        <button class={button} type="submit">Send feedback</button>
+        <p
+          id="form-status"
+          class="mt-3 mb-0 text-sm text-ink-muted"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></p>
+        <p class="mt-3 mb-0 text-sm text-ink-muted">
+          Your message is sent straight through this page — no email app, no
+          account. Leave your email above only if you’d like a reply.
+        </p>
+      </form>
+    </div>
+
+    {/* TODO(Anastasia): donations are on hold — uncomment this card to
+        re-enable, and swap the test-mode Stripe ids for live ones first.
+        (An Astro comment rather than an HTML one so none of it — markup,
+        Stripe script, or the iframe-title fix — ships to the browser.) */}
+    {/*
+    <div class={`${card} mt-6`}>
+      <Icon name="lucide:heart-handshake" class="mb-3 size-7 text-primary" aria-hidden="true" />
+      <h2>Support the project</h2>
+      <p>
+        SomaFlow is free and will stay that way. If it helps you and you’d
+        like to help back, a small donation keeps it going — but please
+        never feel you have to.
+      </p>
+      <!-- Donations are handled by Stripe; the script loads on this page
+           only, and /privacy discloses it. Scoped here rather than in the
+           layout so the other pages stay third-party-free. -->
+      <!-- TODO(Anastasia): these are TEST-mode ids — swap in the live
+           buy-button id and publishable key before launch. -->
+      <script is:inline async src="https://js.stripe.com/v3/buy-button.js"></script>
+      <stripe-buy-button
+        buy-button-id="buy_btn_1TsgyVJK0xFSCXa0dy25hQHN"
+        publishable-key="pk_test_51TsgsdJK0xFSCXa04eHHLePj0Do9NfIudGYKiy7RBvBztkGrMotTVIrh6qH0trrEjU56eL0hPqE0mb6LHOJgCjNq00YpyW8k5N"
+      ></stripe-buy-button>
+      <script>
+        // Stripe renders its iframe without a title, which screen readers
+        // announce as an unnamed frame. The frame lives in Stripe's shadow
+        // root and appears whenever its async script finishes, so poll
+        // briefly rather than observe; gives up quietly after 20s.
+        {
+          let attempts = 0;
+          const timer = setInterval(() => {
+            const frame = document
+              .querySelector('stripe-buy-button')
+              ?.shadowRoot?.querySelector('iframe:not([title])');
+            if (frame) frame.title = 'Donate to SomaFlow via Stripe';
+            if (frame || ++attempts >= 40) clearInterval(timer);
+          }, 500);
+        }
+      </script>
+      <p class="mt-3 mb-0 text-sm text-ink-muted">
+        Donations are processed by Stripe — see the note on our
+        <a href="/privacy/">privacy page</a>.
+      </p>
+    </div>
+    */}
+  </div>
+</Base>
+
+<script>
+  {
+    const form = document.getElementById('feedback-form') as HTMLFormElement;
+    const description = document.getElementById('description') as HTMLTextAreaElement;
+    const descriptionError = document.getElementById('description-error') as HTMLElement;
+    const status = document.getElementById('form-status') as HTMLElement;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const valid = description.value.trim().length > 0;
+      descriptionError.hidden = valid;
+      description.setAttribute('aria-invalid', String(!valid));
+      if (!valid) {
+        description.focus();
+        return;
+      }
+
+      // Netlify Forms accepts a URL-encoded POST to any path on the site,
+      // as long as the body carries the form-name field.
+      const params = new URLSearchParams();
+      new FormData(form).forEach((value, key) => params.append(key, value as string));
+
+      try {
+        const response = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString(),
+        });
+        if (!response.ok) throw new Error(String(response.status));
+        form.reset();
+        status.hidden = false;
+        status.className = 'mt-3 mb-0 text-sm text-ink-muted';
+        status.textContent = 'Thanks — your message is on its way.';
+      } catch {
+        status.hidden = false;
+        status.className = 'mt-3 mb-0 text-sm text-destructive';
+        status.textContent =
+          'Something went wrong sending that — please try again in a moment.';
+      }
+    });
+  }
+</script>

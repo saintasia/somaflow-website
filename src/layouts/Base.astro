@@ -1,0 +1,134 @@
+---
+import '../styles/global.css';
+// Fonts are referenced only inside the CSS, so browsers discover them late
+// and first paint falls back to a system font (visible flash + reflow).
+// Preloading puts them in flight before the stylesheet is even parsed.
+import inclusiveSans400 from '@fontsource/inclusive-sans/files/inclusive-sans-latin-400-normal.woff2?url';
+import inclusiveSans700 from '@fontsource/inclusive-sans/files/inclusive-sans-latin-700-normal.woff2?url';
+import { SITE_NAME, SITE_TAGLINE } from '../consts';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = SITE_TAGLINE } = Astro.props;
+const pageTitle = title ? `${title} — ${SITE_NAME}` : `${SITE_NAME} — guided breathing`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const navLinks = [
+  { href: '/research/', label: 'Research' },
+  { href: '/privacy/', label: 'Privacy' },
+  { href: '/feedback/', label: 'Feedback' },
+];
+const currentPath = Astro.url.pathname;
+
+const navLinkClass =
+  'inline-block rounded-full px-3.5 py-1.5 text-ink no-underline hover:bg-card-surface aria-[current=page]:bg-card-surface aria-[current=page]:font-bold';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Demo media comes from Cloudinary; opening the connection early keeps
+         the hero poster (the LCP image) from waiting on DNS + TLS setup. -->
+    <link rel="preconnect" href="https://res.cloudinary.com" />
+    <link rel="preload" as="font" type="font/woff2" href={inclusiveSans400} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={inclusiveSans700} crossorigin />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/og-image.png', Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <a
+      class="absolute -top-24 left-5 z-100 rounded-full bg-button px-5 py-2.5 text-button-label no-underline focus:top-3"
+      href="#main"
+    >
+      Skip to content
+    </a>
+
+    <header class="sticky top-3 z-50 mx-auto mt-3 max-w-content px-5">
+      <nav
+        class="flex items-center justify-between gap-4 rounded-full bg-floating px-5 py-2.5 backdrop-blur-md"
+        aria-label="Main"
+      >
+        <a
+          class="inline-flex items-center gap-2 text-subheading-lg font-bold text-ink no-underline"
+          href="/"
+        >
+          <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
+            <circle class="fill-primary opacity-18" cx="16" cy="16" r="14"></circle>
+            <circle class="fill-primary opacity-35" cx="16" cy="16" r="9.5"></circle>
+            <circle class="fill-primary opacity-80" cx="16" cy="16" r="5"></circle>
+          </svg>
+          {SITE_NAME}
+        </a>
+
+        <ul class="flex gap-1 max-sm:hidden">
+          {
+            navLinks.map(({ href, label }) => (
+              <li>
+                <a
+                  class={navLinkClass}
+                  href={href}
+                  aria-current={currentPath === href ? 'page' : undefined}
+                >
+                  {label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <!-- Mobile: a plain disclosure, no theatrics. -->
+        <details class="group relative sm:hidden">
+          <summary
+            class="cursor-pointer list-none rounded-full px-3.5 py-1.5 group-open:bg-card-surface [&::-webkit-details-marker]:hidden"
+          >
+            Menu
+          </summary>
+          <ul
+            class="absolute top-full right-0 mt-3.5 flex min-w-40 flex-col gap-0.5 rounded-2xl bg-floating p-2 backdrop-blur-md"
+          >
+            {
+              navLinks.map(({ href, label }) => (
+                <li>
+                  <a
+                    class={navLinkClass}
+                    href={href}
+                    aria-current={currentPath === href ? 'page' : undefined}
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </details>
+      </nav>
+    </header>
+
+    <main id="main" class="mx-auto max-w-content px-5">
+      <slot />
+    </main>
+
+    <footer class="mx-auto mt-section max-w-content px-5 pb-10 text-center">
+      <p class="mb-1.5 text-sm text-ink-muted">
+        <a class="text-inherit" href="/privacy/">Privacy</a> ·
+        <a class="text-inherit" href="/feedback/">Feedback</a>
+      </p>
+      <p class="mb-1.5 text-sm text-ink-muted">
+        Made by AK — no ads, no tracking, just breathing.
+      </p>
+    </footer>
+  </body>
+</html>

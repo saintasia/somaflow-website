@@ -1,0 +1,483 @@
+---
+import { Icon } from 'astro-icon/components';
+import Base from '../layouts/Base.astro';
+import { card } from '../styles/ui';
+
+// Each entry: authors/year, journal, study type, a plain-language one-line
+// finding (deliberately hedged — "reported", "was associated with" — never a
+// medical claim), plus PubMed + DOI links. Every PMID and DOI below was
+// checked to resolve to the cited study before being added; add nothing here
+// without doing the same. Sections grow slowly, on purpose.
+
+// Two lenses on the same list. `techniques` leads — it maps to what the app
+// actually teaches; `conditions` follows. The same study can appear in both.
+const techniques = [
+  {
+    id: 'resonant',
+    icon: 'lucide:audio-waveform',
+    title: 'Resonant breathing (~6 breaths/min)',
+    intro:
+      'Slow, even breathing at roughly six breaths a minute — often with a longer exhale, such as a 4-second inhale and 6-second exhale. It’s the most-studied pattern, the basis of most heart-rate-variability biofeedback research, and the technique behind the MeoHealth app. This is where the evidence runs deepest.',
+    references: [
+      {
+        authors: 'Polizzi et al.',
+        year: 2024,
+        journal: 'Frontiers in Rehabilitation Sciences',
+        type: 'Retrospective analysis (no control group)',
+        finding:
+          'A look back at 99 people with long COVID who used a resonant-breathing program (the study behind the MeoHealth app). Most self-reported measures — sense of wellness, focus, breathing, stress and sleep — improved at follow-up, and 92% reported some improvement. With no control group, it shows association rather than proof.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/39071772/',
+        doi: 'https://doi.org/10.3389/fresc.2024.1411344',
+      },
+      {
+        authors: 'Lin et al.',
+        year: 2012,
+        journal: 'Journal of Alternative and Complementary Medicine',
+        type: 'Randomized controlled trial',
+        finding:
+          'In 43 prehypertensive adults, HRV biofeedback at the resonance frequency was associated with larger falls in blood pressure and bigger rises in baroreflex sensitivity and HRV than simple slow breathing, with effects still present at three months.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/22339103/',
+        doi: 'https://doi.org/10.1089/acm.2010.0607',
+      },
+      {
+        authors: 'Sakakibara et al.',
+        year: 2020,
+        journal: 'Applied Psychophysiology and Biofeedback',
+        type: 'Controlled experiment',
+        finding:
+          'In 28 healthy adults, paced breathing at an individually-identified resonance frequency was associated with increased baroreflex sensitivity and low-frequency HRV during the session.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/31781925/',
+        doi: 'https://doi.org/10.1007/s10484-019-09453-z',
+      },
+      {
+        authors: 'Russo et al.',
+        year: 2017,
+        journal: 'Breathe',
+        type: 'Review',
+        finding:
+          'A plain-language overview of what slow breathing does in healthy people — heart-rate variability, respiratory sinus arrhythmia, baroreflex sensitivity, sympathovagal balance — while repeatedly noting how much still needs more research.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/29209423/',
+        doi: 'https://doi.org/10.1183/20734735.009817',
+      },
+      {
+        authors: 'Jerath et al.',
+        year: 2006,
+        journal: 'Medical Hypotheses',
+        type: 'Hypothesis paper',
+        finding:
+          'A theory paper proposing how slow, deep (pranayamic) breathing might shift the nervous system toward its calmer, parasympathetic mode. A proposed mechanism, not evidence of an effect.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/16624497/',
+        doi: 'https://doi.org/10.1016/j.mehy.2006.02.042',
+      },
+    ],
+  },
+  {
+    id: 'box',
+    icon: 'lucide:square',
+    title: 'Box breathing (4-4-4-4)',
+    intro:
+      'Equal counts — inhale, hold, exhale, hold, often four seconds each. Popular in military and tactical training. Honestly, the box-specific evidence is thin, small and very recent — a few small trials on short-term stress, nothing large or long-term. Simple and low-risk to try; not strongly proven.',
+    references: [
+      {
+        authors: 'McAllister et al.',
+        year: 2026,
+        journal: 'Comprehensive Psychoneuroendocrinology',
+        type: 'Randomized controlled trial',
+        finding:
+          'In 66 adults, box breathing and long-exhale breathing each blunted the rise in heart rate, state anxiety and a salivary stress marker after an acute social-stress test, compared with normal breathing; HRV, cortisol and cognitive performance were unchanged.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/42388906/',
+        doi: 'https://doi.org/10.1016/j.cpnec.2026.100360',
+      },
+      {
+        authors: 'Avudaiselvi & Prabha',
+        year: 2025,
+        journal: 'Journal of Pharmacy and Bioallied Sciences',
+        type: 'Randomized controlled trial (small)',
+        finding:
+          'In a small nursing trial of 140 women after mastectomy, a box-breathing group reported lower stress over time than a usual-care group.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/40860007/',
+        doi: 'https://doi.org/10.4103/jpbs.jpbs_888_25',
+      },
+      {
+        authors: 'Riedl et al.',
+        year: 2026,
+        journal: 'Anxiety, Stress & Coping',
+        type: 'Pilot (real-world, small)',
+        finding:
+          'In a small real-world pilot, one minute of box breathing (or cyclic sighing) in a stressful moment was associated with lower in-the-moment anxiety than a control condition.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/42002307/',
+        doi: 'https://doi.org/10.1080/10615806.2026.2659809',
+      },
+    ],
+  },
+  {
+    id: 'four-seven-eight',
+    icon: 'lucide:timer',
+    title: '4-7-8 breathing',
+    intro:
+      'Inhale for 4, hold for 7, exhale for 8 — a short in, long hold and long out, popularised by Andrew Weil. The evidence is small, recent and mostly in specific patient groups (tinnitus, post-surgery); there are no large or long-term trials yet. Promising and low-risk, not established.',
+    references: [
+      {
+        authors: 'Kirazli et al.',
+        year: 2026,
+        journal: 'Brain and Behavior',
+        type: 'Randomized controlled trial (small)',
+        finding:
+          'In 48 people with tinnitus, adding six weeks of 4-7-8 breathing to an information session was associated with lower tinnitus-distress, anxiety, perceived-stress and insomnia scores than the information alone.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/41676854/',
+        doi: 'https://doi.org/10.1002/brb3.70854',
+      },
+      {
+        authors: 'Aktaş & İlgin',
+        year: 2023,
+        journal: 'Obesity Surgery',
+        type: 'Randomized controlled trial (small)',
+        finding:
+          'In 90 patients after bariatric surgery, a 4-7-8 group reported lower short-term anxiety than deep-breathing or usual-care groups.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/36480101/',
+        doi: 'https://doi.org/10.1007/s11695-022-06405-1',
+      },
+    ],
+  },
+  {
+    id: 'cyclic-sighing',
+    icon: 'lucide:wind',
+    title: 'Cyclic sighing / extended exhale',
+    intro:
+      'Repeated breaths with a deliberately long exhale, often after a double inhale (a “sigh”). The exhale-focused pattern is the part that seems to calm — worth keeping distinct from single sighs, which can do the opposite.',
+    references: [
+      {
+        authors: 'Balban et al.',
+        year: 2023,
+        journal: 'Cell Reports Medicine',
+        type: 'Randomized controlled trial',
+        finding:
+          'In about 108 adults, five minutes a day of breathwork for a month — especially exhale-focused “cyclic sighing” — was associated with greater self-reported mood improvement and a larger drop in breathing rate than mindfulness meditation.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/36630953/',
+        doi: 'https://doi.org/10.1016/j.xcrm.2022.100895',
+      },
+      {
+        authors: 'Riedl et al.',
+        year: 2026,
+        journal: 'Anxiety, Stress & Coping',
+        type: 'Pilot (real-world, small)',
+        finding:
+          'Alongside box breathing, cyclic sighing was associated with lower in-the-moment anxiety than a control condition in a small real-world pilot.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/42002307/',
+        doi: 'https://doi.org/10.1080/10615806.2026.2659809',
+      },
+      {
+        authors: 'Muzumdar et al.',
+        year: 2026,
+        journal: 'Psychophysiology',
+        type: 'Context / a caution',
+        finding:
+          'A useful caveat: single, paced sighs were associated with a shift toward the “alert” (sympathetic) state, not a calmer one. The calming effect seems to come from the repeated long-exhale pattern rather than sighing itself.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/41546440/',
+        doi: 'https://doi.org/10.1111/psyp.70235',
+      },
+    ],
+  },
+];
+
+const sections = [
+  {
+    id: 'nervous-system',
+    icon: 'lucide:brain',
+    title: 'Nervous system regulation',
+    intro:
+      'Slow-paced breathing — around six breaths a minute — is the most-studied pattern. Research here looks at heart-rate variability, vagal tone, and how paced breathing shifts the balance between the body’s stress and rest responses.',
+    references: [
+      {
+        authors: 'Laborde et al.',
+        year: 2022,
+        journal: 'Neuroscience & Biobehavioral Reviews',
+        type: 'Systematic review & meta-analysis',
+        finding:
+          'Pooling 223 studies, the authors reported that voluntary slow breathing was associated with higher vagally-mediated heart-rate variability — a common marker of parasympathetic (“rest”) activity — during practice and after training. They note the underlying studies varied widely.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/35623448/',
+        doi: 'https://doi.org/10.1016/j.neubiorev.2022.104711',
+      },
+      {
+        authors: 'Zaccaro et al.',
+        year: 2018,
+        journal: 'Frontiers in Human Neuroscience',
+        type: 'Systematic review',
+        finding:
+          'A review of 15 studies of slow breathing in healthy people reported links to higher heart-rate variability and greater parasympathetic activity, alongside shifts in brain activity the authors related to calmer, more comfortable states.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/30245619/',
+        doi: 'https://doi.org/10.3389/fnhum.2018.00353',
+      },
+      {
+        authors: 'Lehrer et al.',
+        year: 2003,
+        journal: 'Psychosomatic Medicine',
+        type: 'Randomized controlled trial',
+        finding:
+          'In 54 healthy adults, slow-paced breathing during heart-rate-variability biofeedback was associated with short-term rises in HRV and baroreflex gain, and resting baroreflex gain increased across ten training sessions.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/14508023/',
+        doi: 'https://doi.org/10.1097/01.PSY.0000089200.81962.19',
+      },
+      {
+        authors: 'Lehrer & Gevirtz',
+        year: 2014,
+        journal: 'Frontiers in Psychology',
+        type: 'Review (mechanisms)',
+        finding:
+          'An overview of the field describing the evidence for heart-rate-variability biofeedback — a method built on resonance breathing at roughly six breaths a minute — and proposing that strengthening the baroreflex is its best-supported mechanism.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/25101026/',
+        doi: 'https://doi.org/10.3389/fpsyg.2014.00756',
+      },
+    ],
+  },
+  {
+    id: 'mental-health',
+    icon: 'lucide:heart',
+    title: 'Mental health',
+    intro:
+      'Trials and meta-analyses have examined breathwork for anxiety, depression, and everyday stress — generally finding modest but real improvements, especially with regular practice.',
+    references: [
+      {
+        authors: 'Fincham et al.',
+        year: 2023,
+        journal: 'Scientific Reports',
+        type: 'Meta-analysis of randomized trials',
+        finding:
+          'Pooling randomized trials, the authors reported that breathwork was associated with lower self-reported stress, anxiety and depression than control conditions (a small-to-medium effect) — while explicitly cautioning readers against over-hyping the results.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/36624160/',
+        doi: 'https://doi.org/10.1038/s41598-022-27247-y',
+      },
+      {
+        authors: 'Leyro et al.',
+        year: 2021,
+        journal: 'Clinical Psychology Review',
+        type: 'Meta-analytic review (40 trials)',
+        finding:
+          'Across 40 randomized trials, breathing-focused interventions were associated with greater improvement in anxiety symptoms than control conditions, with the effect stronger against inactive than active comparisons.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/33540222/',
+        doi: 'https://doi.org/10.1016/j.cpr.2021.101980',
+      },
+      {
+        authors: 'Balban et al.',
+        year: 2023,
+        journal: 'Cell Reports Medicine',
+        type: 'Randomized controlled trial',
+        finding:
+          'In about 108 adults, five minutes a day of breathwork for a month — especially exhale-focused “cyclic sighing” — was associated with greater self-reported mood improvement and a larger drop in breathing rate than mindfulness meditation.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/36630953/',
+        doi: 'https://doi.org/10.1016/j.xcrm.2022.100895',
+      },
+      {
+        authors: 'Lehrer et al.',
+        year: 2020,
+        journal: 'Applied Psychophysiology and Biofeedback',
+        type: 'Systematic review & meta-analysis (58 trials)',
+        finding:
+          'Across 58 randomized trials, heart-rate-variability biofeedback (resonance breathing at about six breaths a minute) showed a small-to-moderate overall benefit, with the largest effects reported for anxiety, depression and anger.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/32385728/',
+        doi: 'https://doi.org/10.1007/s10484-020-09466-z',
+      },
+    ],
+  },
+  {
+    id: 'long-covid',
+    icon: 'lucide:stethoscope',
+    title: 'Long COVID',
+    intro:
+      'Breathing-pattern issues are common after COVID, and resonant breathing is being explored as a gentle, low-exertion option. The most directly relevant study is the resonant-breathing program below — also listed under Resonant breathing.',
+    references: [
+      {
+        authors: 'Polizzi et al.',
+        year: 2024,
+        journal: 'Frontiers in Rehabilitation Sciences',
+        type: 'Retrospective analysis (no control group)',
+        finding:
+          'A look back at 99 people with long COVID who used a resonant-breathing program (the study behind the MeoHealth app). Most self-reported measures — sense of wellness, focus, breathing, stress and sleep — improved at follow-up, and 92% reported some improvement. With no control group, it shows association rather than proof.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/39071772/',
+        doi: 'https://doi.org/10.3389/fresc.2024.1411344',
+      },
+    ],
+  },
+  {
+    id: 'me-cfs',
+    icon: 'lucide:battery-low',
+    title: 'ME/CFS',
+    intro:
+      'The thinnest section, and worth being upfront: no study yet tests a plain paced breathe-along in ME/CFS specifically. The condition involves autonomic dysfunction and lower heart-rate variability, and the closest evidence is a couple of small heart-rate-variability biofeedback pilots. Anything exercise-adjacent should be read with real caution, given post-exertional malaise.',
+    references: [
+      {
+        authors: 'Windthorst et al.',
+        year: 2017,
+        journal: 'Journal of Psychosomatic Research',
+        type: 'Exploratory pilot trial (biofeedback)',
+        finding:
+          'In a small pilot of 28 women with CFS, heart-rate-variability biofeedback (delivered through slow-paced breathing) was associated with reduced fatigue and improvements in mood-related measures. A graded-exercise arm also reduced fatigue; both arms were small and unblinded.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/28107894/',
+        doi: 'https://doi.org/10.1016/j.jpsychores.2016.11.014',
+      },
+      {
+        authors: 'Cossu et al.',
+        year: 2025,
+        journal: 'Journal of Clinical Medicine',
+        type: 'Phase II feasibility trial (biofeedback)',
+        finding:
+          'In a feasibility study of people with Long COVID who met ME/CFS criteria, heart-rate-variability biofeedback was well-tolerated with few drop-outs and a greater improvement in severe fatigue than usual care — preliminary findings the authors say need larger trials.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/40806985/',
+        doi: 'https://doi.org/10.3390/jcm14155363',
+      },
+    ],
+  },
+  {
+    id: 'pots',
+    icon: 'lucide:heart-pulse',
+    title: 'POTS',
+    intro:
+      'Postural orthostatic tachycardia syndrome involves the autonomic nervous system directly; work here looks at slow breathing’s effects on heart rate and symptom management alongside standard care.',
+    references: [
+      {
+        authors: 'Stick et al.',
+        year: 2024,
+        journal: 'European Journal of Neurology',
+        type: 'Crossover trial',
+        finding:
+          'In 30 POTS patients on a tilt-table test, breathing at six breaths a minute was associated with a smaller rise in standing heart rate and lower symptom scores than normal breathing; the authors describe it as a simple, no-cost technique to explore alongside standard care.',
+        pubmed: 'https://pubmed.ncbi.nlm.nih.gov/38962840/',
+        doi: 'https://doi.org/10.1111/ene.16402',
+      },
+    ],
+  },
+];
+---
+
+<Base
+  title="Research"
+  description="A plain-English reading list on the evidence behind breathwork — by technique (resonant, box, 4-7-8, cyclic sighing) and by condition (nervous system, mental health, long COVID, ME/CFS, POTS)."
+>
+  <article class="my-section">
+    <h1>Breathwork research</h1>
+
+    <div class={`${card} mt-6 mb-8 border border-destructive`}>
+      <Icon name="lucide:triangle-alert" class="mb-3 size-6 text-destructive" aria-hidden="true" />
+      <p class="m-0">
+        <strong>Please read this first.</strong> SomaFlow is not a medical
+        device, and breathwork is not a treatment or cure for any condition.
+        This page is a reading list, not medical advice. If you live with any
+        of the conditions below, please work with your clinicians — and know
+        that some techniques (long breath-holds, for example) don’t suit
+        everyone.
+      </p>
+    </div>
+
+    <p>
+      This is a curated, plain-English list of studies on breathing. Each
+      entry says what was found in a line or two, with links to the study
+      itself. It grows slowly, on purpose — only things worth your time. The
+      summaries paraphrase what each paper reported; for the details, and the
+      caveats, follow the link and read the source.
+    </p>
+    <p>
+      There are two ways in. <strong>By technique</strong> is the practical
+      one — the patterns the app teaches. <strong>By condition</strong> covers
+      what’s been studied in specific groups. The same study sometimes appears
+      in both, and where the evidence is thin or preliminary, it says so.
+    </p>
+    <p class="text-ink-muted">
+      One caveat, stated plainly: SomaFlow guides <em>paced breathing</em> — it
+      has no heart-rate sensor, so it isn’t biofeedback. Some studies below used
+      HRV biofeedback, where a sensor helps people find and hold the rhythm. The
+      slow, paced breathing is the shared ingredient, and that’s the part the
+      app delivers.
+    </p>
+
+    <nav aria-label="On this page" class="mt-6 text-sm">
+      <p class="m-0 text-caption tracking-caps uppercase text-ink-muted">By technique</p>
+      <p class="mt-1 mb-3">
+        {
+          techniques.map((s, i) => (
+            <>
+              {i > 0 && <span class="text-ink-muted"> · </span>}
+              <a href={`#${s.id}`}>{s.title}</a>
+            </>
+          ))
+        }
+      </p>
+      <p class="m-0 text-caption tracking-caps uppercase text-ink-muted">By condition</p>
+      <p class="mt-1 mb-0">
+        {
+          sections.map((s, i) => (
+            <>
+              {i > 0 && <span class="text-ink-muted"> · </span>}
+              <a href={`#${s.id}`}>{s.title}</a>
+            </>
+          ))
+        }
+      </p>
+    </nav>
+
+    <h2 class="mt-reading">By technique</h2>
+    {
+      techniques.map(({ id, icon, title, intro, references }) => (
+        <section aria-labelledby={id}>
+          <h3 class="mt-8 flex items-center gap-2" id={id}>
+            <Icon name={icon} class="size-5 shrink-0 text-primary" aria-hidden="true" />
+            {title}
+          </h3>
+          <p>{intro}</p>
+          <h4 class="mt-6 text-caption tracking-caps uppercase text-ink-muted">References</h4>
+          <ul class="mt-4 mb-0 list-none space-y-6 p-0">
+            {references.map((ref) => (
+              <li class="border-l-2 border-border-token pl-4">
+                <p class="m-0 text-caption tracking-caps uppercase text-ink-muted">
+                  {ref.type}
+                </p>
+                <p class="mt-1 mb-2">
+                  <strong>{ref.authors} ({ref.year})</strong>
+                  <span class="text-ink-muted"> · {ref.journal}</span>
+                </p>
+                <p class="m-0">{ref.finding}</p>
+                <p class="mt-2 mb-0 text-sm">
+                  <a href={ref.pubmed} rel="noopener">PubMed</a>
+                  <span class="text-ink-muted"> · </span>
+                  <a href={ref.doi} rel="noopener">DOI</a>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+
+    <h2 class="mt-reading">By condition</h2>
+    {
+      sections.map(({ id, icon, title, intro, references }) => (
+        <section aria-labelledby={id}>
+          <h3 class="mt-8 flex items-center gap-2" id={id}>
+            <Icon name={icon} class="size-5 shrink-0 text-primary" aria-hidden="true" />
+            {title}
+          </h3>
+          <p>{intro}</p>
+          <h4 class="mt-6 text-caption tracking-caps uppercase text-ink-muted">References</h4>
+          <ul class="mt-4 mb-0 list-none space-y-6 p-0">
+            {references.map((ref) => (
+              <li class="border-l-2 border-border-token pl-4">
+                <p class="m-0 text-caption tracking-caps uppercase text-ink-muted">
+                  {ref.type}
+                </p>
+                <p class="mt-1 mb-2">
+                  <strong>{ref.authors} ({ref.year})</strong>
+                  <span class="text-ink-muted"> · {ref.journal}</span>
+                </p>
+                <p class="m-0">{ref.finding}</p>
+                <p class="mt-2 mb-0 text-sm">
+                  <a href={ref.pubmed} rel="noopener">PubMed</a>
+                  <span class="text-ink-muted"> · </span>
+                  <a href={ref.doi} rel="noopener">DOI</a>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </article>
+</Base>

@@ -1,0 +1,244 @@
+---
+import { Icon } from 'astro-icon/components';
+import Base from '../layouts/Base.astro';
+import {
+  SITE_TAGLINE,
+  PLAY_STORE_URL,
+  WEB_APP_URL,
+  DEMO_VIDEO_URL,
+  DEMO_POSTER_URL,
+} from '../consts';
+import { button, buttonSecondary, card } from '../styles/ui';
+
+const features = [
+  {
+    icon: 'lucide:waves',
+    title: 'Guided sessions',
+    body: 'A calming visualization expands and contracts with your breath. Choose the one that feels right — then follow it.',
+  },
+  {
+    icon: 'lucide:badge-check',
+    title: 'Proven techniques',
+    body: 'Resonant breathing, 4-7-8, and Box Breathing come built in, each with a plain-language note on what it’s for.',
+  },
+  {
+    icon: 'lucide:sliders-horizontal',
+    title: 'Make it yours',
+    body: 'Create and save your own inhale / hold / exhale / hold patterns, at whatever session length suits you.',
+  },
+  {
+    icon: 'lucide:eye-closed',
+    title: 'Eyes closed? No problem.',
+    body: 'Breath-synced sound swells, optional voice guidance, and vibration cues — each one toggleable, so the app works in silence, in darkness, or both.',
+  },
+  {
+    icon: 'lucide:sprout',
+    title: 'Gentle progress',
+    body: 'Session history and weekly stats, stored only on your device. No streaks, no pressure, just a gentle nudge to keep going.',
+  },
+  {
+    icon: 'lucide:accessibility',
+    title: 'Made for everyone',
+    body: 'Screen-reader friendly, font scaling, contrast-checked colors, light or dark themes that follow your system, and haptics for those who need them.',
+  },
+];
+---
+
+<Base description={SITE_TAGLINE}>
+  <section class="relative grid min-h-hero place-items-center py-12">
+    <div
+      class="hero-wash pointer-events-none absolute top-0 bottom-0 left-1/2 w-screen -translate-x-1/2"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="relative grid items-center justify-items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16"
+    >
+      <div class="max-w-hero-copy text-center lg:justify-self-start lg:text-left">
+        <h1 class="text-hero sm:text-hero-lg">Unlock your wellbeing through the power of breath</h1>
+        <p class="mx-auto max-w-pitch text-lead lg:mx-0">
+          SomaFlow is a guided-breathing app for a calmer nervous system.
+          Free, no ads, and everything stays on your device.
+        </p>
+        <div class="mt-7 flex flex-wrap justify-center gap-3 lg:justify-start">
+          {
+            PLAY_STORE_URL ? (
+              <a class={button} href={PLAY_STORE_URL}>
+                Get it on Google Play
+              </a>
+            ) : (
+              <span class={`${button} cursor-default opacity-65`} aria-disabled="true">
+                Coming to Google Play soon - for free
+              </span>
+            )
+          }
+          {
+            WEB_APP_URL && (
+              <a class={buttonSecondary} href={WEB_APP_URL}>
+                Open the web app
+              </a>
+            )
+          }
+        </div>
+      </div>
+
+      <!-- A deliberately generic phone — dark bezel, no branding — so the
+           recording reads as "the app on a phone", not a specific device. -->
+      <div class="relative w-56 rounded-[2.5rem] bg-deep-700 p-2 shadow-2xl ring-1 ring-white/10 sm:w-64">
+          <div class="relative">
+            <!-- The video is 3+ MB, so it must not compete with first paint:
+                 it ships without a src and the script below attaches it once
+                 the page is idle. Until it plays, the poster (the video's own
+                 first frame, ~12 KB) stands in and is the hero's LCP image. -->
+            <video
+              id="app-demo"
+              class="block w-full rounded-[2rem]"
+              data-src={DEMO_VIDEO_URL}
+              width="576"
+              height="1280"
+              muted
+              loop
+              playsinline
+              preload="none"
+              aria-label="Screen recording of a guided breathing session in the SomaFlow app"
+            ></video>
+            <img
+              id="demo-poster"
+              class="pointer-events-none absolute inset-0 h-full w-full rounded-[2rem] transition-opacity duration-700 ease-out"
+              src={DEMO_POSTER_URL}
+              width="576"
+              height="1280"
+              alt=""
+              fetchpriority="high"
+            />
+          </div>
+          <button
+            id="demo-toggle"
+            type="button"
+            class="absolute right-4 bottom-4 grid size-9 cursor-pointer place-items-center rounded-full border-0 bg-black/45 text-white backdrop-blur-sm hover:bg-black/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            aria-label="Play the app demo"
+          >
+            <Icon name="lucide:pause" class="hidden size-4" data-demo-pause aria-hidden="true" />
+            <Icon name="lucide:play" class="size-4" data-demo-play aria-hidden="true" />
+          </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="my-section" aria-labelledby="features-heading">
+    <h2 id="features-heading">What’s inside</h2>
+    <div class="grid gap-4 sm:grid-cols-2 sm:gap-5">
+      {
+        features.map(({ icon, title, body }) => (
+          <div class={card}>
+            <Icon name={icon} class="mb-3 size-7 text-primary" aria-hidden="true" />
+            <h3 class="mb-1.5">{title}</h3>
+            <p class="mb-0">{body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="my-section" aria-labelledby="why-heading">
+    <h2 id="why-heading" class="flex items-center gap-2.5">
+      <Icon name="lucide:book-open" class="size-6 shrink-0 text-primary" aria-hidden="true" />
+      Why breathwork?
+    </h2>
+    <p>
+      Slow, paced breathing is one of the most studied ways to settle the
+      nervous system — researchers have linked it to heart-rate variability,
+      vagal tone, and lower reported stress and anxiety. We keep a
+      plain-English reading list of the evidence, including research on
+      long COVID, ME/CFS, and POTS.
+    </p>
+    <a class={`${buttonSecondary} mt-1`} href="/research/">Read the research</a>
+  </section>
+
+  <section class="my-section" aria-labelledby="privacy-heading">
+    <div class="rounded-2xl bg-card-surface px-4 py-8 text-center sm:px-6">
+      <Icon name="lucide:shield-check" class="mx-auto mb-3 size-8 text-primary" aria-hidden="true" />
+      <h2 id="privacy-heading">Private by design</h2>
+      <p class="mx-auto max-w-callout">
+        No account. No tracking. No analytics. Your settings and session
+        history live on your device and nowhere else — delete the app and
+        they’re gone.
+      </p>
+      <p class="mb-0"><a href="/privacy/">Read the privacy policy</a></p>
+    </div>
+  </section>
+
+  <section class="my-section" aria-labelledby="about-heading">
+    <h2 id="about-heading" class="text-sm text-ink-muted">About</h2>
+    <p class="mb-0 text-ink-muted">
+      SomaFlow is made by AK, a designer-developer, as a personal project
+      born from her own interest in nervous-system regulation. It will
+      stay free.
+    </p>
+  </section>
+</Base>
+
+<style>
+  /* One broad, faint diagonal tint — nothing circular, no focal hotspot.
+     Teal drifts in from the top-left, fades out across the middle, and a
+     whisper returns at the bottom-right. Full-bleed via the w-screen
+     wrapper; the mask feathers the top and bottom so the layer never cuts
+     a hard line against the page gradient. */
+  .hero-wash {
+    background: linear-gradient(
+      115deg,
+      color-mix(in srgb, var(--primary) 10%, transparent),
+      transparent 45%,
+      transparent 70%,
+      color-mix(in srgb, var(--primary) 7%, transparent)
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      black 4rem,
+      black calc(100% - 4rem),
+      transparent
+    );
+  }
+</style>
+
+<script>
+  // The demo video loads lazily: its src attaches only when the page is
+  // idle, and the poster overlay fades out once frames are actually
+  // rendering. Under prefers-reduced-motion it never auto-loads — the
+  // poster stays until the visitor presses play (the overlay button
+  // pauses/plays for everyone).
+  const demo = document.getElementById('app-demo') as HTMLVideoElement | null;
+  const poster = document.getElementById('demo-poster');
+  const toggle = document.getElementById('demo-toggle');
+  if (demo && toggle) {
+    const playIcon = toggle.querySelector('[data-demo-play]');
+    const pauseIcon = toggle.querySelector('[data-demo-pause]');
+    const loadAndPlay = () => {
+      if (!demo.src) demo.src = demo.dataset.src ?? '';
+      void demo.play().catch(() => {});
+    };
+    const sync = () => {
+      const playing = !demo.paused;
+      toggle.setAttribute('aria-label', playing ? 'Pause the app demo' : 'Play the app demo');
+      pauseIcon?.classList.toggle('hidden', !playing);
+      playIcon?.classList.toggle('hidden', playing);
+    };
+    demo.addEventListener('playing', () => poster?.classList.add('opacity-0'), { once: true });
+    toggle.addEventListener('click', () => {
+      if (demo.paused) loadAndPlay();
+      else demo.pause();
+    });
+    demo.addEventListener('play', sync);
+    demo.addEventListener('pause', sync);
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const start = () =>
+        'requestIdleCallback' in window
+          ? requestIdleCallback(loadAndPlay)
+          : setTimeout(loadAndPlay, 250);
+      if (document.readyState === 'complete') start();
+      else addEventListener('load', start, { once: true });
+    }
+    sync();
+  }
+</script>
