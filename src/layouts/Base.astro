@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 import '../styles/global.css';
 // Fonts are referenced only inside the CSS, so browsers discover them late
 // and first paint falls back to a system font (visible flash + reflow).
@@ -47,6 +48,19 @@ const navLinkClass =
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL('/og-image.png', Astro.site)} />
     <meta name="twitter:card" content="summary_large_image" />
+    <!-- Stamp the theme before first paint so a stored choice doesn't flash.
+         Inline and render-blocking on purpose. -->
+    <script is:inline>
+      try {
+        const stored = localStorage.getItem('theme');
+        document.documentElement.dataset.theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+      } catch {}
+    </script>
   </head>
   <body>
     <a
@@ -73,32 +87,8 @@ const navLinkClass =
           {SITE_NAME}
         </a>
 
-        <ul class="flex gap-1 max-sm:hidden">
-          {
-            navLinks.map(({ href, label }) => (
-              <li>
-                <a
-                  class={navLinkClass}
-                  href={href}
-                  aria-current={currentPath === href ? 'page' : undefined}
-                >
-                  {label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-
-        <!-- Mobile: a plain disclosure, no theatrics. -->
-        <details class="group relative sm:hidden">
-          <summary
-            class="cursor-pointer list-none rounded-full px-3.5 py-1.5 group-open:bg-card-surface [&::-webkit-details-marker]:hidden"
-          >
-            Menu
-          </summary>
-          <ul
-            class="absolute top-full right-0 mt-3.5 flex min-w-40 flex-col gap-0.5 rounded-2xl bg-floating p-2 backdrop-blur-md"
-          >
+        <div class="flex items-center gap-1">
+          <ul class="flex gap-1 max-sm:hidden">
             {
               navLinks.map(({ href, label }) => (
                 <li>
@@ -113,7 +103,55 @@ const navLinkClass =
               ))
             }
           </ul>
-        </details>
+
+          <!-- Theme toggle. Hidden without JS (no data-theme stamped), since
+               it couldn't do anything; the icon swap is pure CSS off the same
+               attribute. -->
+          <button
+            id="theme-toggle"
+            type="button"
+            class="cursor-pointer rounded-full p-2 hover:bg-card-surface [html:not([data-theme])_&]:hidden"
+            aria-label="Switch to dark theme"
+            title="Switch to dark theme"
+          >
+            <Icon
+              name="lucide:moon"
+              class="size-5 text-ink [[data-theme=dark]_&]:hidden"
+              aria-hidden="true"
+            />
+            <Icon
+              name="lucide:sun"
+              class="hidden size-5 text-ink [[data-theme=dark]_&]:block"
+              aria-hidden="true"
+            />
+          </button>
+
+          <!-- Mobile: a plain disclosure, no theatrics. -->
+          <details class="group relative sm:hidden">
+            <summary
+              class="cursor-pointer list-none rounded-full px-3.5 py-1.5 group-open:bg-card-surface [&::-webkit-details-marker]:hidden"
+            >
+              Menu
+            </summary>
+            <ul
+              class="absolute top-full right-0 mt-3.5 flex min-w-40 flex-col gap-0.5 rounded-2xl bg-floating p-2 backdrop-blur-md"
+            >
+              {
+                navLinks.map(({ href, label }) => (
+                  <li>
+                    <a
+                      class={navLinkClass}
+                      href={href}
+                      aria-current={currentPath === href ? 'page' : undefined}
+                    >
+                      {label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </details>
+        </div>
       </nav>
     </header>
 
@@ -130,5 +168,35 @@ const navLinkClass =
         Made by AK — no ads, no tracking, just breathing.
       </p>
     </footer>
+
+    <script>
+      const toggle = document.getElementById('theme-toggle');
+      const root = document.documentElement;
+
+      const label = () => {
+        const text =
+          root.dataset.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+        toggle?.setAttribute('aria-label', text);
+        toggle?.setAttribute('title', text);
+      };
+      label();
+
+      toggle?.addEventListener('click', () => {
+        root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        try {
+          localStorage.setItem('theme', root.dataset.theme);
+        } catch {}
+        label();
+      });
+
+      // No saved choice yet: keep following the OS if it changes mid-visit.
+      matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        try {
+          if (localStorage.getItem('theme')) return;
+        } catch {}
+        root.dataset.theme = e.matches ? 'dark' : 'light';
+        label();
+      });
+    </script>
   </body>
 </html>

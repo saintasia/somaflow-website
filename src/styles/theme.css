@@ -99,8 +99,32 @@
   color-scheme: light dark;
 }
 
+/* The header toggle stamps an explicit choice on <html data-theme="…">,
+   which wins over the OS preference; without JS the attribute is absent and
+   the media query below still follows the system. Keep the two dark blocks
+   identical. */
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --gradient-top: var(--color-deep-900);
+  --gradient-mid: var(--color-deep-800);
+  --gradient-bottom: var(--color-deep-600);
+  --text: var(--color-ice-300);
+  --text-muted: color-mix(in srgb, var(--color-ice-300) 60%, transparent);
+  --primary: var(--color-teal-400);
+  --link: var(--primary);
+  --border-token: var(--color-deep-500);
+  --card-surface: color-mix(in srgb, var(--color-deep-950) 35%, transparent);
+  --floating: color-mix(in srgb, var(--color-deep-700) 94%, transparent);
+  --destructive: var(--color-rose-300);
+
+  color-scheme: dark;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --gradient-top: var(--color-deep-900);
     --gradient-mid: var(--color-deep-800);
     --gradient-bottom: var(--color-deep-600);
