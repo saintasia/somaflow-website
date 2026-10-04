@@ -10,7 +10,7 @@ import {
   DEMO_VIDEO_URL,
   DEMO_POSTER_URL,
 } from '../consts';
-import { buttonSecondary, card } from '../styles/ui';
+import { buttonSecondary, buttonSecondaryCompact, card } from '../styles/ui';
 
 const features = [
   {
@@ -78,29 +78,32 @@ const features = [
              one (group membership → opt-in → install), so the order is
              load-bearing: reshuffle it and testers hit "app not
              available" on Google Play. Same Google account throughout. -->
-        <ol class="mx-auto mt-7 flex max-w-pitch list-none flex-col gap-3 p-0 lg:mx-0">
-          <li class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:justify-start">
-            <a class={buttonSecondary} href={TESTER_GROUP_URL}>
-              <Icon name="lucide:users" class="size-4.5 shrink-0" aria-hidden="true" />
+        <ol
+          class="mx-auto mt-5 flex max-w-pitch list-none flex-wrap justify-center gap-2 p-0 lg:mx-0 lg:justify-start"
+        >
+          <li>
+            <a class={buttonSecondaryCompact} href={TESTER_GROUP_URL}>
+              <Icon name="lucide:users" class="size-4 shrink-0" aria-hidden="true" />
               1. Join the tester group
             </a>
-            <span class="text-sm text-ink-muted">Free Google group, anyone can join.</span>
           </li>
-          <li class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:justify-start">
-            <a class={buttonSecondary} href={TESTER_OPTIN_URL}>
-              <Icon name="lucide:user-check" class="size-4.5 shrink-0" aria-hidden="true" />
+          <li>
+            <a class={buttonSecondaryCompact} href={TESTER_OPTIN_URL}>
+              <Icon name="lucide:user-check" class="size-4 shrink-0" aria-hidden="true" />
               2. Become a tester
             </a>
-            <span class="text-sm text-ink-muted">Use the same Google account as in step 1.</span>
           </li>
-          <li class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:justify-start">
-            <a class={buttonSecondary} href={PLAY_STORE_URL}>
-              <Icon name="lucide:play" class="size-4.5 shrink-0" aria-hidden="true" />
+          <li>
+            <a class={buttonSecondaryCompact} href={PLAY_STORE_URL}>
+              <Icon name="lucide:play" class="size-4 shrink-0" aria-hidden="true" />
               3. Get it on Google Play
             </a>
-            <span class="text-sm text-ink-muted">Unlocks once you’ve opted in.</span>
           </li>
         </ol>
+        <p class="mx-auto mt-3 mb-0 max-w-pitch text-sm text-ink-muted lg:mx-0">
+          Use the same Google account for all three — the install unlocks
+          after step 2.
+        </p>
         {
           WEB_APP_URL && (
             <p class="mt-4 mb-0 text-sm text-ink-muted">
