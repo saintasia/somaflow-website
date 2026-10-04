@@ -8,8 +8,11 @@ export const SITE_TAGLINE =
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=app.somaflow';
 
 // Closed testing: Google Play only unlocks the install for people who have
-// joined this (open, anyone-can-join) Google Group first.
+// joined this (open, anyone-can-join) Google Group first…
 export const TESTER_GROUP_URL = 'https://groups.google.com/g/somaflow-testers';
+
+// …and then accepted the invite on Google's opt-in page.
+export const TESTER_OPTIN_URL = 'https://play.google.com/apps/testing/app.somaflow';
 
 // TODO(Anastasia): URL of the deployed web app.
 export const WEB_APP_URL = '';

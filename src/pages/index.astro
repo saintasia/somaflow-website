@@ -5,6 +5,7 @@ import {
   SITE_TAGLINE,
   PLAY_STORE_URL,
   TESTER_GROUP_URL,
+  TESTER_OPTIN_URL,
   WEB_APP_URL,
   DEMO_VIDEO_URL,
   DEMO_POSTER_URL,
@@ -71,11 +72,12 @@ const features = [
         <p class="mx-auto max-w-pitch text-lead lg:mx-0">
           SomaFlow is a guided-breathing app for a calmer nervous system.
           Free, no ads, and everything stays on your device. Help shape it
-          by becoming an early tester — two quick steps:
+          by becoming an early tester — three quick steps:
         </p>
-        <!-- Joining the group is what grants Play Store access, so the
-             order of these two steps is load-bearing: swap them and
-             testers hit "app not available" on Google Play. -->
+        <!-- Google Play closed testing gates each step on the previous
+             one (group membership → opt-in → install), so the order is
+             load-bearing: reshuffle it and testers hit "app not
+             available" on Google Play. Same Google account throughout. -->
         <ol class="mx-auto mt-7 flex max-w-pitch list-none flex-col gap-3 p-0 lg:mx-0">
           <li class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:justify-start">
             <a class={buttonSecondary} href={TESTER_GROUP_URL}>
@@ -85,11 +87,18 @@ const features = [
             <span class="text-sm text-ink-muted">Free Google group, anyone can join.</span>
           </li>
           <li class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:justify-start">
+            <a class={buttonSecondary} href={TESTER_OPTIN_URL}>
+              <Icon name="lucide:user-check" class="size-4.5 shrink-0" aria-hidden="true" />
+              2. Become a tester
+            </a>
+            <span class="text-sm text-ink-muted">Use the same Google account as in step 1.</span>
+          </li>
+          <li class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:justify-start">
             <a class={buttonSecondary} href={PLAY_STORE_URL}>
               <Icon name="lucide:play" class="size-4.5 shrink-0" aria-hidden="true" />
-              2. Get it on Google Play
+              3. Get it on Google Play
             </a>
-            <span class="text-sm text-ink-muted">Unlocks once you’ve joined the group.</span>
+            <span class="text-sm text-ink-muted">Unlocks once you’ve opted in.</span>
           </li>
         </ol>
         {
