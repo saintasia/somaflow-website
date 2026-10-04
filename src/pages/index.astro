@@ -4,11 +4,12 @@ import Base from '../layouts/Base.astro';
 import {
   SITE_TAGLINE,
   PLAY_STORE_URL,
+  TESTER_GROUP_URL,
   WEB_APP_URL,
   DEMO_VIDEO_URL,
   DEMO_POSTER_URL,
 } from '../consts';
-import { button, buttonSecondary, card } from '../styles/ui';
+import { buttonSecondary, card } from '../styles/ui';
 
 const features = [
   {
@@ -55,31 +56,44 @@ const features = [
       class="relative grid items-center justify-items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16"
     >
       <div class="max-w-hero-copy text-center lg:justify-self-start lg:text-left">
+        <p
+          class="mb-4 inline-flex items-center gap-1.5 text-sm font-bold tracking-[0.08em] text-primary uppercase"
+        >
+          <Icon name="lucide:flask-conical" class="size-4 shrink-0" aria-hidden="true" />
+          Now in closed beta — testers wanted
+        </p>
         <h1 class="text-hero sm:text-hero-lg">Unlock your wellbeing through the power of breath</h1>
         <p class="mx-auto max-w-pitch text-lead lg:mx-0">
           SomaFlow is a guided-breathing app for a calmer nervous system.
-          Free, no ads, and everything stays on your device.
+          Free, no ads, and everything stays on your device. Help shape it
+          by becoming an early tester — two quick steps:
         </p>
-        <div class="mt-7 flex flex-wrap justify-center gap-3 lg:justify-start">
-          {
-            PLAY_STORE_URL ? (
-              <a class={button} href={PLAY_STORE_URL}>
-                Get it on Google Play
-              </a>
-            ) : (
-              <span class={`${button} cursor-default opacity-65`} aria-disabled="true">
-                Coming to Google Play soon - for free
-              </span>
-            )
-          }
-          {
-            WEB_APP_URL && (
-              <a class={buttonSecondary} href={WEB_APP_URL}>
-                Open the web app
-              </a>
-            )
-          }
-        </div>
+        <!-- Joining the group is what grants Play Store access, so the
+             order of these two steps is load-bearing: swap them and
+             testers hit "app not available" on Google Play. -->
+        <ol class="mx-auto mt-7 flex max-w-pitch list-none flex-col gap-3 p-0 lg:mx-0">
+          <li class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:justify-start">
+            <a class={buttonSecondary} href={TESTER_GROUP_URL}>
+              <Icon name="lucide:users" class="size-4.5 shrink-0" aria-hidden="true" />
+              1. Join the tester group
+            </a>
+            <span class="text-sm text-ink-muted">Free Google group, anyone can join.</span>
+          </li>
+          <li class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:justify-start">
+            <a class={buttonSecondary} href={PLAY_STORE_URL}>
+              <Icon name="lucide:play" class="size-4.5 shrink-0" aria-hidden="true" />
+              2. Get it on Google Play
+            </a>
+            <span class="text-sm text-ink-muted">Unlocks once you’ve joined the group.</span>
+          </li>
+        </ol>
+        {
+          WEB_APP_URL && (
+            <p class="mt-4 mb-0 text-sm text-ink-muted">
+              Not on Android? <a href={WEB_APP_URL}>Try the web app</a>.
+            </p>
+          )
+        }
       </div>
 
       <!-- A deliberately generic phone — dark bezel, no branding — so the

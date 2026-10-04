@@ -4,7 +4,7 @@
 // leaves the winner to stylesheet order.
 
 const buttonBase =
-  'inline-block cursor-pointer rounded-full px-7 py-3.5 font-bold no-underline transition-[filter] duration-200 ease-out';
+  'inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-7 py-3.5 font-bold no-underline transition-[filter] duration-200 ease-out';
 
 export const button = `${buttonBase} bg-button text-button-label hover:brightness-108`;
 

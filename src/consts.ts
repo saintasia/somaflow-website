@@ -5,8 +5,11 @@ export const SITE_NAME = 'SomaFlow';
 export const SITE_TAGLINE =
   'Guided breathing for a calmer nervous system — free, private, yours.';
 
-// TODO(Anastasia): real Google Play listing URL once the app is live.
-export const PLAY_STORE_URL = '';
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=app.somaflow';
+
+// Closed testing: Google Play only unlocks the install for people who have
+// joined this (open, anyone-can-join) Google Group first.
+export const TESTER_GROUP_URL = 'https://groups.google.com/g/somaflow-testers';
 
 // TODO(Anastasia): URL of the deployed web app.
 export const WEB_APP_URL = '';
