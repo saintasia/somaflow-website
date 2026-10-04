@@ -56,11 +56,16 @@ const features = [
       class="relative grid items-center justify-items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16"
     >
       <div class="max-w-hero-copy text-center lg:justify-self-start lg:text-left">
-        <p
-          class="mb-4 inline-flex items-center gap-1.5 text-sm font-bold tracking-[0.08em] text-primary uppercase"
-        >
-          <Icon name="lucide:flask-conical" class="size-4 shrink-0" aria-hidden="true" />
-          Now in closed beta — testers wanted
+        <!-- The icon flows inline with the text (not a flex row) so that
+             when the label wraps on narrow screens the lines stay centered
+             and the icon hugs the first word instead of floating beside
+             the whole block. -->
+        <p class="mb-4 text-sm font-bold text-balance tracking-[0.08em] text-primary uppercase">
+          <Icon
+            name="lucide:flask-conical"
+            class="mr-1 inline size-4 align-[-0.1875em]"
+            aria-hidden="true"
+          />Now in closed beta — testers wanted
         </p>
         <h1 class="text-hero sm:text-hero-lg">Unlock your wellbeing through the power of breath</h1>
         <p class="mx-auto max-w-pitch text-lead lg:mx-0">
