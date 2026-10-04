@@ -81,17 +81,21 @@ const features = [
         <ol
           class="mx-auto mt-5 flex max-w-pitch list-none flex-wrap justify-center gap-2 p-0 lg:mx-0 lg:justify-start"
         >
-          <li>
+          <!-- The arrows live inside the leading li, so when the row wraps
+               each arrow stays glued to the button it follows. -->
+          <li class="flex items-center gap-2">
             <a class={buttonSecondaryCompact} href={TESTER_GROUP_URL}>
               <Icon name="lucide:users" class="size-4 shrink-0" aria-hidden="true" />
               1. Join the tester group
             </a>
+            <Icon name="lucide:arrow-right" class="size-4 shrink-0 text-ink-muted" aria-hidden="true" />
           </li>
-          <li>
+          <li class="flex items-center gap-2">
             <a class={buttonSecondaryCompact} href={TESTER_OPTIN_URL}>
               <Icon name="lucide:user-check" class="size-4 shrink-0" aria-hidden="true" />
               2. Become a tester
             </a>
+            <Icon name="lucide:arrow-right" class="size-4 shrink-0 text-ink-muted" aria-hidden="true" />
           </li>
           <li>
             <a class={buttonSecondaryCompact} href={PLAY_STORE_URL}>
